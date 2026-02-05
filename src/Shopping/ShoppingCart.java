@@ -33,6 +33,8 @@ public class ShoppingCart {
         for (ProductInShoppingCart product : products)
             if (product.getProduct().getId().equals(id)) {
                 product.remove();
+                if (product.getNumberInShoppingCart() == 0)
+                        products.remove(product);
                 calculatePrice();
                 return;
             }
