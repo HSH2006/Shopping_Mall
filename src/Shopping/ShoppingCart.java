@@ -18,7 +18,7 @@ public class ShoppingCart {
         }
 
         for (ProductInShoppingCart product2 : products)
-            if (product2.getProduct().getId().equals(product.getId())) {
+            if (product2.getProduct().getName().equals(product.getName())) {
                 product2.add();
                 calculatePrice();
                 return;
@@ -29,13 +29,13 @@ public class ShoppingCart {
         calculatePrice();
     }
 
-    public void remove(String id) {
+    public void remove(String name) {
         for (ProductInShoppingCart product : products)
-            if (product.getProduct().getId().equals(id)) {
+            if (product.getProduct().getName().equals(name)) {
                 product.remove();
+                calculatePrice();
                 if (product.getNumberInShoppingCart() == 0)
                         products.remove(product);
-                calculatePrice();
                 return;
             }
     }
@@ -51,7 +51,7 @@ public class ShoppingCart {
                 price += ((double) product.getNumberInShoppingCart()) * product.getProduct().getPrice();
     }
 
-    public List<ProductInShoppingCart> view() {
+    public List<ProductInShoppingCart> getProducts() {
         return products;
     }
     public double getPrice() {
