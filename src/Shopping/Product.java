@@ -3,42 +3,24 @@ package Shopping;
 import javax.swing.*;
 
 public class Product {
-    private String id;
     private String name;
-    private String category;
     private double price;
     private int number;
-    private String title;
     private ImageIcon image;
 
-    public Product(String id, String name, String category, double price, int number, String title, ImageIcon image) {
-        this.id = id;
+    public Product(String name, double price, int number, ImageIcon image) {
         this.name = name;
-        this.category = category;
         this.price = price;
         this.number = number;
-        this.title = title;
         this.image = image;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public ImageIcon getImage() {
         return image;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public String getCategory() {
-        return category;
     }
 
     public double getPrice() {
@@ -49,16 +31,8 @@ public class Product {
         return number;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
     }
 
     public void setPrice(double price) {
@@ -67,10 +41,6 @@ public class Product {
 
     public void setNumber(int number) {
         this.number = number;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public void setImage(ImageIcon image) {
