@@ -1,18 +1,32 @@
 package Shopping;
 
+import javax.swing.*;
+
 public class Product {
     private String id;
     private String name;
     private String category;
     private double price;
     private int number;
+    private String title;
+    private ImageIcon image;
 
-    public Product(String id, String name, String category, double price, int number) {
+    public Product(String id, String name, String category, double price, int number, String title, ImageIcon image) {
         this.id = id;
         this.name = name;
         this.category = category;
         this.price = price;
         this.number = number;
+        this.title = title;
+        this.image = image;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public ImageIcon getImage() {
+        return image;
     }
 
     public String getId() {
@@ -53,6 +67,14 @@ public class Product {
 
     public void setNumber(int number) {
         this.number = number;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setImage(ImageIcon image) {
+        this.image = image;
     }
 
     public boolean decreaseProduct(int decrease) {
