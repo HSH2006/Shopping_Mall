@@ -1,23 +1,18 @@
 package Users;
 
 public abstract class User {
-    private String id;
     private String username;
     private String password;
     private String email;
     private String role;
 
-    public User(String id, String username, String password, String email, String role) {
-        this.id = id;
+    public User(String username, String password, String email, String role) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.role = role;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public void setUsername(String username) {
         this.username = username;
@@ -35,10 +30,6 @@ public abstract class User {
         this.role = role;
     }
 
-    public String getId() {
-        return id;
-
-    }
 
     public String getUsername() {
         return username;
