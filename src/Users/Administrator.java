@@ -1,17 +1,11 @@
 package Users;
 
-import Shopping.Product;
-
-import javax.swing.*;
-
 public class Administrator extends User {
-
-    public Administrator(String username, String password, String email) {
+    private String id;
+    public Administrator(String username, String password, String email, String id) {
         super(username, password, email, "Administrator");
+        this.id = id;
     }
 
-    public void addProduct(String id, String name, String category, double price, int number, String title, ImageIcon image) {
-        Product newProduct = new Product(id, name, category, price, number, title, image);
 
-    }
 }
