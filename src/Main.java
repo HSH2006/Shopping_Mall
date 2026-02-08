@@ -268,7 +268,8 @@ public class Main {
                 Adminfront(user);
             }
             else {
-                Productfront(user);
+                ShoppingCart shoppingCart = new ShoppingCart();
+                Productfront(user, shoppingCart);
             }
         }
         else {
@@ -384,8 +385,7 @@ public class Main {
         }
     }
 
-    private static void Productfront(Object user) {
-        ShoppingCart shoppingCart = new ShoppingCart();
+    private static void Productfront(Object user, ShoppingCart shoppingCart) {
         JFrame frame = new JFrame("Shopping Mall");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(600, 600);
@@ -452,15 +452,18 @@ public class Main {
         JButton viewCartButton = new JButton("View Cart");
         viewCartButton.setBackground(Color.YELLOW);
         viewCartButton.setForeground(Color.BLACK);
-
         viewCartButton.addActionListener(e -> {
+            frame.dispose();
+            sabad(shoppingCart, user);
+        });
+        /*viewCartButton.addActionListener(e -> {
             StringBuilder cartContents = new StringBuilder("Items in Cart:\n");
             for (ProductInShoppingCart p : shoppingCart.getProducts()) {
                 cartContents.append(p.getProduct().getName() + " number in basket :" + p.getNumberInShoppingCart()).append("\n");
             }
             cartContents.append("Prise : " + shoppingCart.getPrice()).append("\n");
             JOptionPane.showMessageDialog(frame, cartContents.toString());
-        });
+        });*/
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             frame.dispose();
@@ -472,8 +475,63 @@ public class Main {
         frame.setVisible(true);
     }
 
-}
+    private static void sabad(ShoppingCart shoppingCart, Object user) {
+        JFrame frame = new JFrame("Shopping Cart");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 600);
+        frame.setLayout(new FlowLayout());
 
+        // wallpaper theme
+        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+
+
+        for (ProductInShoppingCart product2 : shoppingCart.getProducts()) {
+            Product product = product2.getProduct();
+            JPanel productPanel = new JPanel();
+            productPanel.setLayout(new BorderLayout());
+            productPanel.setBackground(Color.WHITE);
+
+            ImageIcon originalIcon = product.getImage();
+            Image scaledImage = originalIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            ImageIcon productImage = new ImageIcon(scaledImage);
+
+            JLabel titleLabel = new JLabel(product.getName());
+            JLabel priceLabel = new JLabel("Price: " + product.getPrice());
+            JLabel quantityLabel = new JLabel("Number in bascket: " + product2.getNumberInShoppingCart());
+            //JLabel imageLabel = new JLabel(product.getImage());
+
+            // button color
+
+
+            JLabel image = new JLabel(productImage);
+            productPanel.add(image, BorderLayout.CENTER);
+            JPanel textPanel = new JPanel(new GridLayout(2, 1));
+            textPanel.add(titleLabel);
+            textPanel.add(priceLabel);
+            textPanel.add(quantityLabel);
+            productPanel.add(textPanel, BorderLayout.NORTH);
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            productPanel.add(buttonPanel, BorderLayout.SOUTH);
+            frame.add(productPanel);
+        }
+        GridBagConstraints gbc = new GridBagConstraints();
+        JTextArea messageArea = new JTextArea(2, 20);
+        messageArea.setEditable(false);
+        gbc.gridy = 5;
+        gbc.fill = GridBagConstraints.BOTH;
+        frame.add(messageArea, gbc);
+        messageArea.setText("Price kol: " + shoppingCart.getPrice());
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            frame.dispose();
+            //Catalog.saveToFile();  // Ensure products are saved before leaving
+            Productfront(user, shoppingCart);
+        });
+        frame.add(backButton);
+        frame.setVisible(true);
+    }
+
+}
 
 
 
