@@ -20,11 +20,16 @@ public class ShoppingCart {
         for (ProductInShoppingCart product2 : products)
             if (product2.getProduct().getName().equals(product.getName())) {
                 product2.add();
+                int x = product.getNumber() - 1;
+                product.setNumber(x);
                 calculatePrice();
                 return;
             }
 
         ProductInShoppingCart newProduct = new ProductInShoppingCart(product);
+        int x = product.getNumber() - 1;
+        product.setNumber(x);
+        calculatePrice();
         products.add(newProduct);
         calculatePrice();
     }
@@ -33,6 +38,9 @@ public class ShoppingCart {
         for (ProductInShoppingCart product : products)
             if (product.getProduct().getName().equals(name)) {
                 product.remove();
+                int x = product.getProduct().getNumber() + 1;
+                product.getProduct().setNumber(x);
+                calculatePrice();
                 calculatePrice();
                 if (product.getNumberInShoppingCart() == 0)
                         products.remove(product);
