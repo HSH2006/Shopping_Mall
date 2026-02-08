@@ -456,8 +456,9 @@ public class Main {
         viewCartButton.addActionListener(e -> {
             StringBuilder cartContents = new StringBuilder("Items in Cart:\n");
             for (ProductInShoppingCart p : shoppingCart.getProducts()) {
-                cartContents.append(p.getProduct().getName()).append("\n");
+                cartContents.append(p.getProduct().getName() + " number in basket :" + p.getNumberInShoppingCart()).append("\n");
             }
+            cartContents.append("Prise : " + shoppingCart.getPrice()).append("\n");
             JOptionPane.showMessageDialog(frame, cartContents.toString());
         });
         JButton backButton = new JButton("Back");
