@@ -406,6 +406,7 @@ public class Main {
 
             JLabel titleLabel = new JLabel(product.getName());
             JLabel priceLabel = new JLabel("Price: " + product.getPrice());
+            JLabel quantityLabel = new JLabel("Quantity: " + product.getNumber());
             //JLabel imageLabel = new JLabel(product.getImage());
             JButton addButton = new JButton("Add to Basket");
             JButton removeButton = new JButton("Remove from Basket");
@@ -418,8 +419,12 @@ public class Main {
 
             addButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    shoppingCart.add(product);
-                    JOptionPane.showMessageDialog(frame, product.getName() + " added to basket.");
+                    if (product.getNumber() == 0)
+                        JOptionPane.showMessageDialog(frame, product.getName() + " mojodi nadarad.");
+                    else {
+                        shoppingCart.add(product);
+                        JOptionPane.showMessageDialog(frame, product.getName() + " added to basket.");
+                    }
                 }
             });
 
@@ -435,6 +440,7 @@ public class Main {
             JPanel textPanel = new JPanel(new GridLayout(2, 1));
             textPanel.add(titleLabel);
             textPanel.add(priceLabel);
+            textPanel.add(quantityLabel);
             productPanel.add(textPanel, BorderLayout.NORTH);
             JPanel buttonPanel = new JPanel(new FlowLayout());
             buttonPanel.add(addButton);
@@ -454,10 +460,19 @@ public class Main {
             }
             JOptionPane.showMessageDialog(frame, cartContents.toString());
         });
-
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            frame.dispose();
+            //Catalog.saveToFile();  // Ensure products are saved before leaving
+            Login();
+        });
         frame.add(viewCartButton);
+        frame.add(backButton);
         frame.setVisible(true);
     }
 
 }
+
+
+
 
