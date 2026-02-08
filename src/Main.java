@@ -82,7 +82,10 @@ public class Main {
         JButton backButton = new JButton("Back");
         addProductButton.addActionListener(e -> addProduct());
         removeProductButton.addActionListener(e -> removeProdct());
-        showCatalogButton.addActionListener(e -> showCatalog());
+        showCatalogButton.addActionListener(e -> {
+            adminFrame.dispose();
+            viewCatalog(admin);
+        });
         editTitleProductButton.addActionListener(e -> editTitleProduct());
         editPriseProductButton.addActionListener(e ->  editPriseProduct());
         editQuantityProductButton.addActionListener(e ->  editQuantityProduct());
@@ -407,7 +410,6 @@ public class Main {
             JLabel titleLabel = new JLabel(product.getName());
             JLabel priceLabel = new JLabel("Price: " + product.getPrice());
             JLabel quantityLabel = new JLabel("Quantity: " + product.getNumber());
-            //JLabel imageLabel = new JLabel(product.getImage());
             JButton addButton = new JButton("Add to Basket");
             JButton removeButton = new JButton("Remove from Basket");
 
@@ -467,10 +469,52 @@ public class Main {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             frame.dispose();
-            //Catalog.saveToFile();  // Ensure products are saved before leaving
             Login();
         });
         frame.add(viewCartButton);
+        frame.add(backButton);
+        frame.setVisible(true);
+    }
+
+    private static void viewCatalog(Object admin) {
+        JFrame frame = new JFrame("View Catalog");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 600);
+        frame.setLayout(new FlowLayout());
+
+        // wallpaper theme
+        frame.getContentPane().setBackground(Color.LIGHT_GRAY);
+
+
+        for (Product product : catalog.getProducts()) {
+            JPanel productPanel = new JPanel();
+            productPanel.setLayout(new BorderLayout());
+            productPanel.setBackground(Color.WHITE);
+
+            ImageIcon originalIcon = product.getImage();
+            Image scaledImage = originalIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            ImageIcon productImage = new ImageIcon(scaledImage);
+
+            JLabel titleLabel = new JLabel(product.getName());
+            JLabel priceLabel = new JLabel("Price: " + product.getPrice());
+            JLabel quantityLabel = new JLabel("Quantity: " + product.getNumber());
+            JLabel image = new JLabel(productImage);
+            productPanel.add(image, BorderLayout.CENTER);
+            JPanel textPanel = new JPanel(new GridLayout(2, 1));
+            textPanel.add(titleLabel);
+            textPanel.add(priceLabel);
+            textPanel.add(quantityLabel);
+            productPanel.add(textPanel, BorderLayout.NORTH);
+            JPanel buttonPanel = new JPanel(new FlowLayout());
+            productPanel.add(buttonPanel, BorderLayout.SOUTH);
+            frame.add(productPanel);
+        }
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            frame.dispose();
+            Adminfront(admin);
+        });
+
         frame.add(backButton);
         frame.setVisible(true);
     }
@@ -530,8 +574,5 @@ public class Main {
         frame.add(backButton);
         frame.setVisible(true);
     }
-
 }
-
-
 
