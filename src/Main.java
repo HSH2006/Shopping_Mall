@@ -17,12 +17,14 @@ import java.util.Map;
 
 
 public class Main {
+    private static Map<String, Administrator> administrators = new HashMap<>();
+    private static Map<String, Customer> customers = new HashMap<>();
     private static Catalog catalog = new Catalog();
     public static void main(String[] args) {
         Product[] products = {
-                new Product("Coffee",  100,2, new ImageIcon(" ")),
-                new Product( "hot chocolate",  200, 3, new ImageIcon(" ")),
-                new Product("nescafe", 300, 1, new ImageIcon(" ")),
+                new Product("Coffee",  100,2, new ImageIcon("C:/Users/home/Downloads/12.jpg")),
+                new Product( "hot chocolate",  200, 3, new ImageIcon("C:/Users/home/Downloads/13.jpg")),
+                new Product("nescafe", 300, 1, new ImageIcon("C:/Users/home/Downloads/14.jpg")),
         };
 
         for (Product product : products)
@@ -31,35 +33,29 @@ public class Main {
     }
 
     static class AuthenticationService {
-        private Map<String, User> users = new HashMap<>();
-        private Map<String, Administrator> administrators = new HashMap<>();
-        private Map<String, Customer> customers = new HashMap<>();
 
         public AuthenticationService() {
-            users.put("user1", new User("user1", "pass1", "user1@example.com", "Administrator"));
-            users.put("user2", new User("user2", "pass2", "user2@example.com" , "Administrator"));
-            users.put("user3", new User("user3", "pass3", "user3@example.com", "Customer"));
-
             administrators.put("admin1", new Administrator("admin1", "adminpass", "admin1@example.com", "ADM001"));
             administrators.put("admin2", new Administrator("admin2", "adminpass2", "admin2@example.com", "ADM002"));
             customers.put("user3", new Customer("user3", "pass3", "user3@example.com"));
         }
 
-        public User authenticate(String username, String password) {
-            if (administrators.containsKey(username)) {
-                Administrator admin = administrators.get(username);
-                if (admin.getPassword().equals(password)) {
-                    return admin;
+        public User authenticate(String username, String password, String userType) {
+            if (userType.equals("admin")) {
+                if (administrators.containsKey(username)) {
+                    Administrator admin = administrators.get(username);
+                    if (admin.getPassword().equals(password)) {
+                        return admin;
+                    }
                 }
+                else
+                    return null;
             }
-
             if (customers.containsKey(username)) {
                 Customer customer = customers.get(username);
-                if (customer.getPassword().equals(password)) {
+                if (customer.getPassword().equals(password))
                     return customer;
-                }
             }
-
             return null;
         }
     }
@@ -68,26 +64,44 @@ public class Main {
 
     private static void Adminfront(Object admin) {
         JFrame adminFrame = new JFrame("Admin Panel");
+
         adminFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         adminFrame.setSize(400, 400);
         adminFrame.setLayout(new FlowLayout());
 
         JLabel label = new JLabel("Welcome Admin: " + admin.toString());
-        adminFrame.add(label);
+        adminFrame.add(label, BorderLayout.NORTH);
 
         JButton addProductButton = new JButton("Add Product");
+        JButton removeProductButton = new JButton("Remove Product");
+        JButton editTitleProductButton = new JButton("Edit Title Product");
+        JButton editPriseProductButton = new JButton("Edit Prise Product");
+        JButton editQuantityProductButton = new JButton("Edit Quantity Product");
+        JButton editImageProductButton = new JButton("Edit Image Product");
         JButton showCatalogButton = new JButton("Show Catalog");
         JButton backButton = new JButton("Back");
         addProductButton.addActionListener(e -> addProduct());
+        removeProductButton.addActionListener(e -> removeProdct());
         showCatalogButton.addActionListener(e -> showCatalog());
+        editTitleProductButton.addActionListener(e -> editTitleProduct());
+        editPriseProductButton.addActionListener(e ->  editPriseProduct());
+        editQuantityProductButton.addActionListener(e ->  editQuantityProduct());
+        editImageProductButton.addActionListener(e ->  editImageProduct());
         backButton.addActionListener(e -> {
             adminFrame.dispose();
             //Catalog.saveToFile();  // Ensure products are saved before leaving
             Login();
         });
 
+        //adminFrame.setLayout(new BorderLayout());
+        adminFrame.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 40));
         adminFrame.add(addProductButton);
+        adminFrame.add(removeProductButton);
         adminFrame.add(showCatalogButton);
+        adminFrame.add(editTitleProductButton);
+        adminFrame.add(editPriseProductButton);
+        adminFrame.add(editQuantityProductButton);
+        adminFrame.add(editImageProductButton);
         adminFrame.add(backButton);
 
         adminFrame.setVisible(true);
@@ -96,6 +110,111 @@ public class Main {
     private static void showCatalog() {
         String catalogContents = catalog.showCatalog();
         JOptionPane.showMessageDialog(null, catalogContents.isEmpty() ? "No products available." : catalogContents);
+    }
+
+    public static void editImageProduct() {
+        JTextField titleField = new JTextField(15);
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Title :"));
+        myPanel.add(titleField);
+        JTextField imageField = new JTextField(15);
+        myPanel.add(new JLabel("New Image Addres :"));
+        myPanel.add(imageField);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter Edit Product", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String title = titleField.getText();
+            String imageAdress = imageField.getText();
+            ImageIcon productImage = new ImageIcon(imageAdress);
+            for (Product product : catalog.getProducts())
+                if (product.getName().equals(title) == true) {
+                    product.setImage(productImage);
+                    JOptionPane.showMessageDialog(null,  title + " edit in catalog.");
+                    return;
+                }
+            JOptionPane.showMessageDialog(null,  title + " not find in catalog.");
+        }
+    }
+
+    public static void editQuantityProduct() {
+        JTextField titleField = new JTextField(15);
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Title :"));
+        myPanel.add(titleField);
+        JTextField quantityField = new JTextField(15);
+        myPanel.add(new JLabel("New Quantity :"));
+        myPanel.add(quantityField);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter Edit Product", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String title = titleField.getText();
+            int quantityNew = Integer.parseInt(quantityField.getText());
+            for (Product product : catalog.getProducts())
+                if (product.getName().equals(title) == true) {
+                    product.setNumber(quantityNew);
+                    JOptionPane.showMessageDialog(null,  title + " edit in catalog.");
+                    return;
+                }
+            JOptionPane.showMessageDialog(null,  title + " not find in catalog.");
+        }
+    }
+
+    public static void editPriseProduct() {
+        JTextField titleField = new JTextField(15);
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Title :"));
+        myPanel.add(titleField);
+        JTextField priseField = new JTextField(15);
+        myPanel.add(new JLabel("New Prise :"));
+        myPanel.add(priseField);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter Edit Product", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String title = titleField.getText();
+            double priseNew = Double.parseDouble(priseField.getText());
+            for (Product product : catalog.getProducts())
+                if (product.getName().equals(title) == true) {
+                    product.setPrice(priseNew);
+                    JOptionPane.showMessageDialog(null,  title + " edit in catalog.");
+                    return;
+                }
+            JOptionPane.showMessageDialog(null,  title + " not find in catalog.");
+        }
+    }
+    public static void editTitleProduct() {
+        JTextField titleField = new JTextField(15);
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Old Title :"));
+        myPanel.add(titleField);
+        JTextField titleField2 = new JTextField(15);
+        myPanel.add(new JLabel("New Title :"));
+        myPanel.add(titleField2);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter Edit Product", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String title = titleField.getText();
+            String titleNew = titleField2.getText();
+            for (Product product : catalog.getProducts())
+                if (product.getName().equals(title) == true) {
+                    product.setName(titleNew);
+                    JOptionPane.showMessageDialog(null,  title + " edit in catalog.");
+                    return;
+                }
+            JOptionPane.showMessageDialog(null,  title + " not find in catalog.");
+        }
+    }
+    public static void removeProdct() {
+        JTextField titleField = new JTextField(15);
+        JPanel myPanel = new JPanel();
+        myPanel.add(new JLabel("Title :"));
+        myPanel.add(titleField);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter Remove Product", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String title = titleField.getText();
+            for (Product product : catalog.getProducts())
+                    if (product.getName().equals(title) == true) {
+                        catalog.removeProduct(product);
+                        JOptionPane.showMessageDialog(null,  title + " remove of catalog.");
+                        return;
+                    }
+            JOptionPane.showMessageDialog(null,  title + " not find in catalog.");
+        }
     }
 
     public static void addProduct() {
@@ -119,11 +238,16 @@ public class Main {
         int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter Product Details", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
             String title = titleField.getText();
-            int price = Integer.parseInt(priceField.getText());
+            double price = Double.parseDouble(priceField.getText());
             int quantity = Integer.parseInt(quantityField.getText());
             String imageUrl = imageUrlField.getText();
 
             ImageIcon productImage = new ImageIcon(imageUrl);
+            for (Product product : catalog.getProducts())
+                if (product.getName().equals(title) == true){
+                    JOptionPane.showMessageDialog(null,  title + " also in catalog, cant add.");
+                    return;
+                }
             catalog.addProduct(new Product(title, price, quantity, productImage));
 
             JOptionPane.showMessageDialog(null, quantity + " of " + title + " added to catalog.");
@@ -135,7 +259,7 @@ public class Main {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
         AuthenticationService authService = new AuthenticationService();
-        User user = authService.authenticate(username, password);
+        User user = authService.authenticate(username, password, userType);
         if (user != null) {
             messageArea.setText("succes");
             clearLoginFields(usernameField, passwordField);
@@ -199,33 +323,65 @@ public class Main {
         gbc.gridy = 3;
         frame.add(customerButton, gbc);
 
+        JButton singUpButton = new JButton("Sing up");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        frame.add(singUpButton, gbc);
+
         // bottomcollor
         adminButton.setBackground(Color.BLUE);
         adminButton.setForeground(Color.WHITE);
         customerButton.setBackground(Color.GREEN);
         customerButton.setForeground(Color.BLACK);
+        singUpButton.setBackground(Color.YELLOW);
+        singUpButton.setForeground(Color.BLACK);
 
         JTextArea messageArea = new JTextArea(2, 20);
         messageArea.setEditable(false);
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         gbc.fill = GridBagConstraints.BOTH;
         frame.add(messageArea, gbc);
 
+
         adminButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 performLogin(usernameField, passwordField, messageArea, "admin");
             }
         });
 
         customerButton.addActionListener(new ActionListener() {
-            @Override
             public void actionPerformed(ActionEvent e) {
                 performLogin(usernameField, passwordField, messageArea, "customer");
             }
         });
 
+        singUpButton.addActionListener(e -> singUp());
+
         frame.setVisible(true);
+    }
+
+    private static void singUp() {
+        JPanel myPanel = new JPanel();
+        JTextField userNameField = new JTextField(15);
+        myPanel.add(new JLabel("Username :"));
+        myPanel.add(userNameField);
+        JTextField passwordField = new JTextField(15);
+        myPanel.add(new JLabel("Password :"));
+        myPanel.add(passwordField);
+        JTextField emailField = new JTextField(15);
+        myPanel.add(new JLabel("Email :"));
+        myPanel.add(emailField);
+        int result = JOptionPane.showConfirmDialog(null, myPanel, "Enter informatiom of new customer", JOptionPane.OK_CANCEL_OPTION);
+        if (result == JOptionPane.OK_OPTION) {
+            String username = userNameField.getText();
+            String password = passwordField.getText();
+            String email = emailField.getText();
+            if (customers.containsKey(username)) {
+                JOptionPane.showMessageDialog(null,  username + " sing up later.(failed)");
+            }
+            customers.put(username, new Customer(username, password, email));
+            JOptionPane.showMessageDialog(null,  username + " sing up succesful.");
+        }
     }
 
     private static void Productfront(Object user) {
@@ -238,22 +394,19 @@ public class Main {
         // wallpaper theme
         frame.getContentPane().setBackground(Color.LIGHT_GRAY);
 
-        // Sample products
-        Product[] products = {
-                new Product("Coffee",  100,2, new ImageIcon(" ")),
-                new Product( "hot chocolate",  200, 3, new ImageIcon(" ")),
-                new Product("nescafe", 300, 1, new ImageIcon(" ")),
-        };
 
-        for (Product product : products) {
-            catalog.addProduct(product);
+        for (Product product : catalog.getProducts()) {
             JPanel productPanel = new JPanel();
             productPanel.setLayout(new BorderLayout());
             productPanel.setBackground(Color.WHITE);
 
+            ImageIcon originalIcon = product.getImage();
+            Image scaledImage = originalIcon.getImage().getScaledInstance(150, 150, Image.SCALE_SMOOTH);
+            ImageIcon productImage = new ImageIcon(scaledImage);
+
             JLabel titleLabel = new JLabel(product.getName());
             JLabel priceLabel = new JLabel("Price: " + product.getPrice());
-            JLabel imageLabel = new JLabel(product.getImage());
+            //JLabel imageLabel = new JLabel(product.getImage());
             JButton addButton = new JButton("Add to Basket");
             JButton removeButton = new JButton("Remove from Basket");
 
@@ -264,7 +417,6 @@ public class Main {
             removeButton.setForeground(Color.WHITE);
 
             addButton.addActionListener(new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     shoppingCart.add(product);
                     JOptionPane.showMessageDialog(frame, product.getName() + " added to basket.");
@@ -272,14 +424,14 @@ public class Main {
             });
 
             removeButton.addActionListener(new ActionListener() {
-                @Override
                 public void actionPerformed(ActionEvent e) {
                     shoppingCart.remove(product.getName());
                     JOptionPane.showMessageDialog(frame, product.getName() + " removed from basket.");
                 }
             });
 
-            productPanel.add(imageLabel, BorderLayout.CENTER);
+            JLabel image = new JLabel(productImage);
+            productPanel.add(image, BorderLayout.CENTER);
             JPanel textPanel = new JPanel(new GridLayout(2, 1));
             textPanel.add(titleLabel);
             textPanel.add(priceLabel);
@@ -308,6 +460,4 @@ public class Main {
     }
 
 }
-
-
 
